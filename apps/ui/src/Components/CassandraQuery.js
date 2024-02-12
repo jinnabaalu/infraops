@@ -37,54 +37,45 @@ function CassandraQuery() {
 
   useEffect(() => {
     memoizedFetchContactPoints();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [memoizedFetchContactPoints]);
 
   const fetchContactPoints = () => {
-    fetch('http://localhost:5555/cassandra/api/contactPoints')
-      .then((response) => response.json())
-      .then((data) => {
-        setContactPoints(data.contact_points);
-
-        if (data.contact_points.length > 0) {
-          setSelectedContactPoint(data.contact_points[0].hosts[0]);
-          fetchKeyspaces(data.contact_points[0].hosts[0]); // Fetch keyspaces with the default contact point
-        } else {
-          setSelectedContactPoint('');
-          setKeyspaces([]);
-          setSelectedKeyspace('');
+    fetch('http://localhost:8080/api/cassandra/contactPoints')
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
         }
+        return response.json();
+      })
+      .then((data) => {
+        setContactPoints(data);
       })
       .catch((error) => {
-        setError('Error fetching contact points.');
+        setError('Error fetching contact points: ' + error.message);
       });
   };
 
+
   const fetchKeyspaces = (selectedContactPoint) => {
+    const requestBody = {
+      contactPoints: [selectedContactPoint],
+      dataCenter: "Mars"
+    };
 
-    if (selectedContactPoint) {
-      const requestBody = {
-        contact_points: [selectedContactPoint],
-      };
-
-      const requestOptions = {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody),
-      };
-
-      fetch('http://localhost:5555/cassandra/api/keyspaces', requestOptions)
-        .then((response) => response.json())
-        .then((data) => {
-          setKeyspaces(data.keyspaces);
-          setSelectedKeyspace('');
-        })
-        .catch((error) => {
-          setError('Error fetching keyspaces.');
-        });
-    }
+    fetch('http://localhost:8080/api/cassandra/keyspaces', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setKeyspaces(data.keyspaces);
+      })
+      .catch((error) => {
+        setError('Error fetching keyspaces: ' + error.message);
+      });
   };
 
   const executeQuery = () => {
@@ -92,27 +83,34 @@ function CassandraQuery() {
       const requestBody = {
         query: query,
         keyspace: selectedKeyspace,
-        contact_points: [selectedContactPoint],
+        contactPoints: [selectedContactPoint],
+        dataCenter: "Mars"
       };
-      fetch('http://localhost:5555/cassandra/api/select', {
+      fetch('http://localhost:8080/api/cassandra/executeSelectQuery', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(requestBody),
       })
-        .then((response) => response.json())
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error('Failed to execute the query.');
+          }
+          return response.json();
+        })
         .then((data) => {
-          console.log(data)
-          setResponse(data);
+          console.log(data.result)
+          setResponse(data.result || []); // Ensure response is an array even if undefined
           setError(null);
         })
         .catch((error) => {
-          setResponse([]);
+          setResponse([]); // Set response to an empty array in case of error
           setError('Error executing the query.');
         });
     }
   };
+  
 
   return (
     <Container>
@@ -165,7 +163,7 @@ function CassandraQuery() {
               value={selectedKeyspace}
               onChange={(e) => setSelectedKeyspace(e.target.value)}>
               <option value="">Select Keyspace</option>
-              {keyspaces.map((ks) => (
+              {keyspaces && keyspaces.map((ks) => (
                 <option key={ks} value={ks}>
                   {ks}
                 </option>
@@ -200,7 +198,7 @@ function CassandraQuery() {
           <Card>
             <Card.Body>
               {error && <div style={{ color: 'red' }}>{error}</div>}
-              {response.length > 0 ? (
+              {response && response.length > 0 ? (
                 <small>
                   <Table striped bordered hover>
                     <thead style={{ backgroundColor: '#007bff', color: 'white' }}>
@@ -222,7 +220,7 @@ function CassandraQuery() {
                   </Table>
                 </small>
               ) : (
-                <div className="text-center">No data available</div>
+                <div className="text-center">{error ? "Error fetching data" : "No data available"}</div>
               )}
             </Card.Body>
           </Card>
