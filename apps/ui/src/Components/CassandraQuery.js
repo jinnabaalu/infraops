@@ -59,7 +59,7 @@ function CassandraQuery() {
   const fetchKeyspaces = (selectedContactPoint) => {
     const requestBody = {
       contactPoints: [selectedContactPoint],
-      dataCenter: "Mars"
+      dataCenter: "staging"
     };
 
     fetch('http://localhost:8080/api/cassandra/keyspaces', {
@@ -84,7 +84,7 @@ function CassandraQuery() {
         query: query,
         keyspace: selectedKeyspace,
         contactPoints: [selectedContactPoint],
-        dataCenter: "Mars"
+        dataCenter: "staging"
       };
       fetch('http://localhost:8080/api/cassandra/executeSelectQuery', {
         method: 'POST',
