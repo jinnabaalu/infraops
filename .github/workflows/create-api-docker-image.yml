@@ -1,4 +1,4 @@
-name: Build and Push Docker Image
+name: Build and Push API Docker Image
 
 on:
   push:
@@ -6,10 +6,9 @@ on:
       - main
     paths:
       - 'apps/api/**'
-      - 'apps/ui/**'
 
 jobs:
-  build-and-push:
+  build-and-push-api:
     runs-on: ubuntu-latest
 
     steps:
@@ -23,14 +22,7 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Build and Push API Docker image
-      if: ${{ github.event_name == 'push' && contains(github.event.compare, 'apps/api/') }}
+    - name: Build API Docker image
       run: |
         docker build -t ghcr.io/${{ github.repository }}/api:latest apps/api
         docker push ghcr.io/${{ github.repository }}/api:latest
-
-    - name: Build and Push UI Docker image
-      if: ${{ github.event_name == 'push' && contains(github.event.compare, 'apps/ui/') }}
-      run: |
-        docker build -t ghcr.io/${{ github.repository }}/ui:latest apps/ui
-        docker push ghcr.io/${{ github.repository }}/ui:latest
