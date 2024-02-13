@@ -1,4 +1,6 @@
 contactPoints:
   - dc: LOCAL
+    datacenterName: staging
+    enable: True
     hosts:
       - cassandra-db

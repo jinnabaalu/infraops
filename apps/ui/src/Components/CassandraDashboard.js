@@ -8,7 +8,7 @@ function CassandraDashboard() {
   }, []);
 
   const fetchHealthStatus = () => {
-    fetch('http://localhost:8080/api/health')
+    fetch(`${process.env.REACT_APP_API_END_POINT}/api/health`)
       .then(response => response.json())
       .then(data => {
         setHealthStatus(data.status);

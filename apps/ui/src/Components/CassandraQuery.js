@@ -40,7 +40,7 @@ function CassandraQuery() {
   }, [memoizedFetchContactPoints]);
 
   const fetchContactPoints = () => {
-    fetch('http://localhost:8080/api/cassandra/contactPoints')
+    fetch(`${process.env.REACT_APP_API_END_POINT}/api/cassandra/contactPoints`)
       .then((response) => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -62,7 +62,7 @@ function CassandraQuery() {
       dataCenter: "staging"
     };
 
-    fetch('http://localhost:8080/api/cassandra/keyspaces', {
+    fetch(`${process.env.REACT_APP_API_END_POINT}/api/cassandra/keyspaces`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -86,7 +86,7 @@ function CassandraQuery() {
         contactPoints: [selectedContactPoint],
         dataCenter: "staging"
       };
-      fetch('http://localhost:8080/api/cassandra/executeSelectQuery', {
+      fetch(`${process.env.REACT_APP_API_END_POINT}/api/cassandra/executeSelectQuery`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -110,7 +110,7 @@ function CassandraQuery() {
         });
     }
   };
-  
+
 
   return (
     <Container>

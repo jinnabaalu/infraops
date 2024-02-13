@@ -1,15 +1,17 @@
 version: "3"
 
 services:
-  ui:
+  infraui:
     container_name: ui
     image: infraui
     restart: always
+    environment:
+      - REACT_APP_API_END_POINT=http://infraapi:8080
     ports:
       - 3000:80
     networks:
       - app_network
-  api:
+  infraapi:
     container_name: api
     image: infraapi
     environment:
