@@ -21,10 +21,10 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Build API Docker image
-      run: docker build -t ghcr.io/${{ github.repository }}/api:latest ./apps/api/Dockerfile
+      run: docker build -t ghcr.io/${{ github.repository }}/api:latest apps/api/Dockerfile
 
-    - name: Build API Docker image
-      run: docker build -t ghcr.io/${{ github.repository }}/ui:latest ./apps/ui/Dockerfile
+    - name: Build UI Docker image
+      run: docker build -t ghcr.io/${{ github.repository }}/ui:latest apps/ui/Dockerfile
 
     - name: Push Docker image to GHCR
       run: |
