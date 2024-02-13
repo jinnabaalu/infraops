@@ -1,0 +1,4 @@
+contactPoints:
+  - dc: LOCAL
+    hosts:
+      - cassandra-db

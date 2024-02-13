@@ -12,6 +12,10 @@ services:
   api:
     container_name: api
     image: infraapi
+    environment:
+      - CASSANDRA_CONTACT_POINTS=/usr/src/config/cassandra.yml
+    volumes:
+      - ./config/cassandra.yml:/usr/src/config/cassandra.yml
     restart: always
     ports:
       - 8080:8080

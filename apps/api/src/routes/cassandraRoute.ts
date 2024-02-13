@@ -1,34 +1,30 @@
 import express, { Request, Response } from 'express';
 import { ContactPointRequest, ExecuteQueryRequest, RequestKeyspaceEntity } from '../models/cassandraModels';
 import { CassandraService } from '../services/cassandraService';
+import * as fs from 'fs';
+import * as yaml from 'js-yaml';
 
 const cassandraRoute = express.Router();
-const contactPoints = [
-  {
-    "dc": "LOCAL",
-    "hosts": ["127.0.0.1"]
-  },
-  {
-    "dc": "NY",
-    "hosts": ["10.0.23.1", "10.0.23.2"]
-  },
-  {
-    "dc": "SYD",
-    "hosts": ["10.0.27.1", "10.0.27.2"]
-  }
-]
+
+let contactPoints: any[] = [];
+if (process.env.CASSANDRA_CONTACT_POINTS) {
+  const configFile = fs.readFileSync(process.env.CASSANDRA_CONTACT_POINTS, 'utf8');
+  const config: any = yaml.load(configFile);
+  contactPoints = config.contactPoints;
+} else {
+  console.error('CONFIG_FILE_PATH environment variable is not defined.');
+}
+
 
 cassandraRoute.get('/contactPoints', async (_req, res: Response<ContactPointRequest[] | { error: string }>) => {
   try {
     const cassandraService = new CassandraService();
-    console.log("ROUTE METHOD")
     res.json(contactPoints);
   } catch (error) {
     console.error('Error fetching contact points:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
-
 cassandraRoute.post('/keyspaces', async (req: Request<{}, {}, RequestKeyspaceEntity>, res: Response) => {
   try {
     const { contactPoints, dataCenter } = req.body;
