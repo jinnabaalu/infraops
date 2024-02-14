@@ -6,21 +6,21 @@ services:
     image: infraui
     restart: always
     environment:
-      - REACT_APP_API_END_POINT=http://infraapi:8080
+      - REACT_APP_API_ENDPOINT="http://localhost:8081"
     ports:
       - 3000:80
     networks:
       - app_network
   infraapi:
-    container_name: api
+    container_name: infraapi
     image: infraapi
     environment:
       - CASSANDRA_CONTACT_POINTS=/usr/src/config/cassandra.yml
     volumes:
       - ./config/cassandra.yml:/usr/src/config/cassandra.yml
-    restart: always
     ports:
-      - 8080:8080
+      - 8081:8081
+    restart: always
     networks:
       - app_network
   cassandra-db:
@@ -40,7 +40,7 @@ services:
       - ./cassandra-db:/var/lib/cassandra
     environment: &environment
         CASSANDRA_CLUSTER_NAME: SolarSystem
-        CASSANDRA_DC: Mars
+        CASSANDRA_DC: staging
         CASSANDRA_RACK: West
         CASSANDRA_ENDPOINT_SNITCH: GossipingPropertyFileSnitch
         CASSANDRA_NUM_TOKENS: 128

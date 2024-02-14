@@ -1,5 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Row, Col, Form, Button, Table, Container, Card } from 'react-bootstrap';
+import { REACT_APP_API_ENDPOINT } from '../config';
+
+const executeSelectQueryApi = `${REACT_APP_API_ENDPOINT}/api/cassandra/executeSelectQuery`;
+const contactPointsApi = `${REACT_APP_API_ENDPOINT}/api/cassandra/contactPoints`;
+const keyspacesApi = `${REACT_APP_API_ENDPOINT}/api/cassandra/keyspaces`;
 
 function CassandraQuery() {
   const [contactPoints, setContactPoints] = useState([]);
@@ -40,7 +45,7 @@ function CassandraQuery() {
   }, [memoizedFetchContactPoints]);
 
   const fetchContactPoints = () => {
-    fetch(`${process.env.REACT_APP_API_END_POINT}/api/cassandra/contactPoints`)
+    fetch(contactPointsApi)
       .then((response) => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
@@ -62,7 +67,7 @@ function CassandraQuery() {
       dataCenter: "staging"
     };
 
-    fetch(`${process.env.REACT_APP_API_END_POINT}/api/cassandra/keyspaces`, {
+    fetch(keyspacesApi, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -86,7 +91,7 @@ function CassandraQuery() {
         contactPoints: [selectedContactPoint],
         dataCenter: "staging"
       };
-      fetch(`${process.env.REACT_APP_API_END_POINT}/api/cassandra/executeSelectQuery`, {
+      fetch(executeSelectQueryApi, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

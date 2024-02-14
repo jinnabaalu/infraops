@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { REACT_APP_API_ENDPOINT } from '../config';
+
+const healthApi = `${REACT_APP_API_ENDPOINT}/api/health`;
 
 function CassandraDashboard() {
   const [healthStatus, setHealthStatus] = useState('');
@@ -8,7 +11,7 @@ function CassandraDashboard() {
   }, []);
 
   const fetchHealthStatus = () => {
-    fetch(`${process.env.REACT_APP_API_END_POINT}/api/health`)
+    fetch(healthApi)
       .then(response => response.json())
       .then(data => {
         setHealthStatus(data.status);

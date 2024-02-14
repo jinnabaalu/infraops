@@ -6,7 +6,7 @@ import cassandraRoute from './src/routes/cassandraRoute';
 import cors from 'cors';
 
 const app = express();
-const port = 8080;
+const port = 8081;
 
 app.use(bodyParser.json());
 app.use(cors());

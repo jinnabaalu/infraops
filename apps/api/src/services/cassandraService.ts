@@ -18,12 +18,10 @@ export class CassandraService {
   }
 
   async getKeySpaces(contactPoints: string[], dataCenter: string): Promise<string[]> {
-    console.log("GET KEYSPACE")
     const client = new Client({
       contactPoints,
       localDataCenter: dataCenter
     });
-
     const result = await client.execute('SELECT keyspace_name FROM system_schema.keyspaces');
     return result.rows.map(row => row['keyspace_name']);
   }

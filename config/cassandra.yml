@@ -3,4 +3,4 @@ contactPoints:
     datacenterName: staging
     enable: True
     hosts:
-      - cassandra-db
+      - 127.0.0.1
