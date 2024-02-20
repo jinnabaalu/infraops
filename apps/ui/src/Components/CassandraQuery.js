@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Row, Col, Form, Button, Table, Container, Card } from 'react-bootstrap';
-import { REACT_APP_API_ENDPOINT } from '../config';
+import { API_ENDPOINT } from '../config';
 
-const executeSelectQueryApi = `${REACT_APP_API_ENDPOINT}/api/cassandra/executeSelectQuery`;
-const contactPointsApi = `${REACT_APP_API_ENDPOINT}/api/cassandra/contactPoints`;
-const keyspacesApi = `${REACT_APP_API_ENDPOINT}/api/cassandra/keyspaces`;
+const executeSelectQueryApi = `${API_ENDPOINT}/api/cassandra/executeSelectQuery`;
+const contactPointsApi = `${API_ENDPOINT}/api/cassandra/contactPoints`;
+const keyspacesApi = `${API_ENDPOINT}/api/cassandra/keyspaces`;
 
 function CassandraQuery() {
   const [contactPoints, setContactPoints] = useState([]);

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { REACT_APP_API_ENDPOINT } from '../config';
+import { API_ENDPOINT } from '../config';
 
-const healthApi = `${REACT_APP_API_ENDPOINT}/api/health`;
+const healthApi = `${API_ENDPOINT}/api/health`;
 
 function CassandraDashboard() {
   const [healthStatus, setHealthStatus] = useState('');

@@ -5,18 +5,6 @@ import * as fs from 'fs';
 export class CassandraService {
   private client!: Client;
 
-  async getContactPoints(): Promise<ContactPointRequest[] | { error: string }> {
-    console.log("SERVICE METHOD")
-    const configFilePath = '../config/cassandra.json';
-    try {
-        const fileContents = fs.readFileSync(configFilePath, 'utf8');
-        const configData = JSON.parse(fileContents) as ContactPointRequest[];
-        return configData;
-    } catch (error: any) {
-        return { error: `Error loading or parsing config file: ${error.message}` };
-    }
-  }
-
   async getKeySpaces(contactPoints: string[], dataCenter: string): Promise<string[]> {
     const client = new Client({
       contactPoints,
